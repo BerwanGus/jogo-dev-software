@@ -3,6 +3,7 @@
 #include <ncurses.h>
 #include "lib.h"
 #include "player.h"
+#include "enemy.h"
 
 #include <ctime>
 #include <string>
@@ -51,9 +52,6 @@ int main(int argc, char const *argv[])
     int yMax, xMax;
     getmaxyx(stdscr, yMax, xMax);
 
-    //Posição inicial do inimigo
-    int enemy_y = yMax / 2;
-    int enemy_x = xMax / 2;
     
     WINDOW * playwin = newwin(20, 50, (yMax/2) - 10, 10);
     box(playwin, 0, 0);
@@ -67,9 +65,20 @@ int main(int argc, char const *argv[])
         wrefresh(playwin);
     } while(p->getmv() != 'x');
 
-    
+    Enemy * ptr = new Enemy(playwin, 4, 4, '7');
+
+    while(true) {
+
+        ptr->move();
+        ptr->draw();
+
+        refresh();                  //Cancelado quando o inimigo morrer e é chamado o destrutor dele
+
+        napms(100);
+    }
 
     endwin();
+
 
     return 0;
 }
